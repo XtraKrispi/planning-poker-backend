@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE LambdaCase #-}
 
 module Main where
 
@@ -74,19 +75,17 @@ app conns nextId = WWS.websocketsOr WSC.defaultConnectionOptions wsApp backupApp
 
 processMessages :: (Int, WS.Connection) -> TVar.TVar [PlayerConnection] -> IO ()
 processMessages (connId, conn) conns = 
-  forever $ do
-    gameMsg <- P.parseOnly convert . getMessageText <$> WS.receiveDataMessage conn
-    either (\_ -> return ()) (\msg ->
-      case msg of
-        PlayerConnected name -> do
-          let player = mkPlayer name
-          STM.atomically $ TVar.modifyTVar conns ((:) (connId, conn, player))
-          conns' <- TVar.readTVarIO conns
-          broadcastToAllBut connId (convertMessage $ NewPlayer player) conns'
-          sendAllPlayersBut conn connId conns'
-          return ()
-        PlayersRequest -> TVar.readTVarIO conns >>= sendAllPlayersBut conn connId
-      ) gameMsg
+  forever $ 
+    P.parseOnly convert . getMessageText <$> WS.receiveDataMessage conn >>=
+      either  (\_ -> return ()) 
+              (\case
+                  PlayerConnected name -> do
+                    let player = mkPlayer name
+                    STM.atomically $ TVar.modifyTVar conns ((:) (connId, conn, player))
+                    conns' <- TVar.readTVarIO conns
+                    broadcastToAllBut connId (convertMessage $ NewPlayer player) conns'
+                    sendAllPlayersBut conn connId conns'
+                  PlayersRequest -> TVar.readTVarIO conns >>= sendAllPlayersBut conn connId) 
 
 getAllPlayersBut :: Int -> [PlayerConnection] -> [Player]
 getAllPlayersBut i = 
