@@ -20,8 +20,12 @@ dependencies:
   - http-types
   - text
   - stm
+  - attoparsec
+  - bytestring
+  - aeson
   
 executables:
   planning-poker-backend:
     source-dirs:      src
     main:             Main.hs
+    ghc-options: [-threaded, -Wall, -Werror]
