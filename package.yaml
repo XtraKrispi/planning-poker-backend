@@ -1,0 +1,27 @@
+name:                planning-poker-backend
+version:             0.1.0.0
+#synopsis:
+#description:
+homepage:            https://github.com/githubuser/planning-poker-backend#readme
+license:             BSD3
+author:              Author name here
+maintainer:          example@example.com
+copyright:           2018 Author name here
+category:            Web
+extra-source-files:
+- README.md
+
+dependencies:
+  - base >= 4.7 && < 5
+  - warp
+  - wai-websockets
+  - wai
+  - websockets
+  - http-types
+  - text
+  - stm
+  
+executables:
+  planning-poker-backend:
+    source-dirs:      src
+    main:             Main.hs
