@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 653510ac32e4a8735dea237cf7d8291bd3365ce206ba8c10f42ba2337a219425
+-- hash: 0b8d08adafb11d8f951c2532fb9d78efa818631db1354fd861b816b9874d523c
 
 name:           planning-poker-backend
 version:        0.1.0.0
@@ -31,7 +31,9 @@ executable planning-poker-backend
     , attoparsec
     , base >=4.7 && <5
     , bytestring
+    , containers
     , http-types
+    , network-uri
     , stm
     , text
     , wai
